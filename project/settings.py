@@ -32,7 +32,7 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app']
 CELERY_BEAT_SCHEDULE = {
     'create-courses-every-20-hours': {
         'task': 'GPP.tasks.generate_courses_task',
