@@ -1,0 +1,141 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}        
+<section class="home-grid">
+
+  <div class="heading" >
+ <h1 >Liste de Cours</h1>
+ <form action="{% url 'GPP:generate_courses' %}" method="post" style="justify-content: space-between;">
+  {% csrf_token %}
+  <input type="text" name="day_name" value="Aujourd'hui: {{day_name}}" style="font-size: medium;" >  <!-- Example for Friday -->
+  <button type="submit" class=" btn-secondary"><i class="fas fa-sync-alt"></i></button>
+</form>
+
+    <a href="{% url "GPP:create_cours"   %}" class="inline-btn nav-link" 
+          style="margin-left: 4%; color: white;padding:.7rem 3rem; margin-top: .1rem;"><i class="fas fa-add"></i><span>Ajouter</span></a>
+  </div>
+          
+    <table class="table "  >
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">date</th>
+            <th scope="col">Deb</th>
+            <th scope="col">Prof</th>
+            <th scope="col">Matiere</th>
+            <th scope="col">Filiere</th>
+            <th scope="col">Type</th>
+            <th scope="col">Groupe</th>
+            <th scope="col">Nbh</th>
+            <th scope="col">signé?</th>
+            <th scope="col">payé?</th>
+            <th scope="col-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cour in page_obj %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+         <td>{{cour.date_creation| date:'d-m'}} </td>
+         <td> {{cour.deb }}</td>
+         <td>{{cour.prof}}</td>
+         <td>{{cour.matiere}}</td>
+         <td>{{cour.matiere.filiere}}</td>
+         <td>{{cour.type}}</td>
+         <td>{{cour.groupe}}</td>
+         <td>{{cour.nbh}}</td>
+       
+         <td>
+          {% if cour.isSigned == 'effectué' %}
+          <i class="fas fa-check-circle" style="color: green;"></i> <!-- Yes icon -->
+          {% else %}
+          <i class="fas fa-times-circle" style="color: red;"></i> <!-- No icon -->
+          {% endif %}
+      </td>
+
+      <td>
+        {% if cour.isPaid == 'préparé' %}
+        <i class="fas fa-check-circle" style="color: green;"></i> <!-- Yes icon -->
+        {% else %}
+        <i class="fas fa-times-circle" style="color: red;"></i> <!-- No icon -->
+        {% endif %}
+    </td>
+
+    <td colspan="2">
+      <a href="#" onclick="Signer({{ cour.id }}); return false;"
+      style=" color: green;"><i class="fas fa-check"></i></a>
+
+      <a href="{% url 'GPP:update_cour' cour.id %} "><i class="fa fa-edit" aria-hidden="true" style="color:green;"></i></a>
+      <a href="#" onclick="confirmDelete({{ cour.id }}); return false;">
+        <i class="fa fa-trash" aria-hidden="true" style="color:red;"></i>
+    </a>
+    
+   </a>
+  
+     </td>
+     
+    </tr>
+      {% endfor %}
+  
+       </tbody>
+      </table>
+     
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="nav-link" href="?page=1">&laquo; Premiere</a>
+            <a class="nav-link" href="?page={{ page_obj.previous_page_number }}">Avant</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="nav-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+            <a class="nav-link" href="?page={{ page_obj.paginator.num_pages }}">Derniere &raquo;</a>
+        {% endif %}
+    </div>
+</section>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.js"></script>
+<script>
+  function confirmDelete(courId) {
+      Swal.fire({
+          title: 'Êtes-vous sûr?',
+          text: "Vous ne pourrez pas revenir en arrière!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Oui, supprimer!',
+          cancelButtonText: 'Annuler'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = "Cd" + courId;
+          }
+      })
+  }
+
+  function Signer(courId) {
+    Swal.fire({
+        title: 'Êtes-vous sûr de signer?',
+        text: "Vous ne pourrez pas revenir en arrière!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, signer!',
+        cancelButtonText: 'Annuler'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "SC" + courId;
+        }
+    })
+}
+  </script>
+  
+
+ {% endblock body %}

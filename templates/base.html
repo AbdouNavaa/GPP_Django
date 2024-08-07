@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GPP{% endblock %}</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
+
+      <head><script src="{% static 'js/color-modes.js' %}"></script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+ 
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
+</head>
+<body>
+    {% include "navbar.html" %}
+   
+
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+      <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+              id="toggle-btn"
+              type="button"
+              aria-expanded="false"
+              data-bs-toggle="dropdown"
+              aria-label="Toggle theme (auto)">
+        <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
+        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+            Light
+            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+            Dark
+            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
+            Auto
+            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <header>
+        <div class="px-3 py-2 text-bg-dark border-bottom">
+            <div class="container">
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <a href="{% url 'GPP:home' %}" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                        <i class="fas fa-bootstrap fa-2x"></i>
+                    </a>
+    
+                    
+                    {% if request.user.is_authenticated %}
+                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                        <li>
+                            <a href="{% url 'GPP:home' %}" class="nav-link text-secondary">
+                                <i class="fas fa-home fa-lg"></i> Home
+                            </a>
+                        </li>
+                    {% if request.user.is_staff %}
+                        <li>
+                            <a href="{% url 'account:users' %}" class="nav-link text-white">
+                                <i class="fas fa-users fa-lg"></i> Users
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'account:profs' %}" class="nav-link text-white">
+                                <i class="fas fa-chalkboard-teacher fa-lg"></i> Professeurs
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'GPP:filieres' %}" class="nav-link text-white">
+                                <i class="fas fa-graduation-cap fa-lg"></i> Filieres
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'GPP:cours' %}" class="nav-link text-white">
+                                <i class="fa fa-bookmark "></i> Cours
+                            </a>
+                        </li>
+    
+                        <li>
+                            <a href="{% url 'GPP:paies' %}" class="nav-link text-white">
+                                <i class="fas fa-money-check fa-lg"></i> Paiements
+                            </a>
+                        </li>
+
+                    </ul>
+                    <form class="col-8 col-lg-2 mb-2 mb-lg-0 me-lg-auto" role="search">
+                        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                    </form> 
+                    {% endif %}
+
+                    {% if request.user.is_authenticated %}
+                    <div class="text-end" style="display: flex;height:7rem;">
+                        <a href="{% url 'account:logout' %}" class="btn me-2" style="height:5rem;width:10rem">Logout</a>
+                    </div>
+                    {% else %}
+                    <div class="text-end" style="display: flex;height:7rem;">
+                        <a href="{% url 'account:login' %}" class="btn me-2" style="height:5rem;width:10rem">Login</a>
+                        <a href="{% url 'account:signup' %}" class="btn" style="height:5rem;width:10rem">Sign-up</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    
+
+    <div class="content">
+            {% block content %}
+            {% endblock %}
+        {% block body %}
+        {% endblock %}
+    </div>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

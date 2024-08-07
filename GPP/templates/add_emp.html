@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<section class="form-container">
+   <form action="{% url 'GPP:add_emp' %}" method="post" id="cours-form">
+    {% csrf_token %}
+    <h3>Créer un Emploi</h3>
+    {{ form.as_p }}
+    {% if form.errors %}
+        <ul class="form-errors">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <input type="submit" value="Créer" class="btn">
+   </form>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        function loadmats() {
+            var profId = $('#id_prof').val();
+            var filiereId = $('#id_filiere').val();
+            if (profId && filiereId) {
+                $.ajax({
+                    url: "{% url 'GPP:load_mats' %}",
+                    data: {
+                        'prof_id': profId,
+                        'filiere_id': filiereId,
+                    },
+                    success: function(data) {
+                        $("#id_matiere").html('<option value="">Sélectionnez une Matiere</option>');
+                        $.each(data, function(key, value) {
+                            $("#id_matiere").append('<option value="' + value.id + '">' + value.filiere__name + '-' + value.name + '</option>');
+                        });
+                    }
+                });
+            }
+        }
+    
+        $('#id_prof, #id_filiere').change(loadmats);
+    });
+
+    $(document).ready(function() {
+        function loadGroups() {
+            var profId = $('#id_prof').val();
+            var matiereId = $('#id_matiere').val();
+            var typeCours = $('#id_type').val();
+            if (profId && matiereId && typeCours) {
+                $.ajax({
+                    url: "{% url 'GPP:load_groupes' %}",
+                    data: {
+                        'prof_id': profId,
+                        'matiere_id': matiereId,
+                        'type_cours': typeCours
+                    },
+                    success: function(data) {
+                        $("#id_groupe").html('<option value="">Sélectionnez un groupe</option>');
+                        $.each(data, function(key, value) {
+                            $("#id_groupe").append('<option value="' + value + '">' + value + '</option>');
+                        });
+                    }
+                });
+            }
+        }
+    
+        $('#id_prof, #id_matiere, #id_type').change(loadGroups);
+    });
+</script>
+{% endblock %}

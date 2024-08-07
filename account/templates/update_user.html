@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<section class="form-container">
+   <form action="{% url 'account:update_user' user.id %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Modifier {{prof}}</h3>
+     {% csrf_token %}
+     {{ form.as_p }}
+    <input type="submit" value="Ajouter" name="submit" class="btn">
+   </form>
+</section>
+
+{% endblock %}

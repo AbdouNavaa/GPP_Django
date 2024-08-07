@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}        
+<section class="home-grid">
+    <div class="box-container">
+       {% if request.user.is_staff %}
+       <div class="box" style="background-color: rgba(255, 0, 0, 0.724);">
+          <h3 class="title"><a href="{% url 'account:users' %}" style="color:white;" class="nav-link text-white">Users</a></h3>
+          <p class="tutor">{{users.count}}</p>
+       </div>
+ 
+       <div class="box" style="background-color: rgba(16, 28, 242, 0.724);">
+         <h3 class="title"><a href="{% url 'account:profs' %}" style="color:white;" class="nav-link text-white">Profs</a></h3>
+          <p class="tutor">{{profs.count}}</p>
+      </div>
+    
+
+      <div class="box" style="background-color: rgba(5, 91, 31, 0.916);">
+         <h3 class="title"><a href="{% url 'GPP:cours' %}" style="color:white;" class="nav-link text-white">Cours</a></h3>
+         <p class="tutor">{{cours.count}}</p>
+      </div>
+
+      <div class="box" style="background-color: rgba(215, 35, 155, 0.916);">
+         <h3 class="title"><a href="{% url 'GPP:paie_list' %}" style="color:white;" class="nav-link text-white">Paiements</a></h3>
+         <p class="tutor">{{paies.count}}</p>
+      </div>
+
+      <div class="box" style="background-color: rgba(8, 16, 160, 0.724);">
+         <h3 class="title"><a href="{% url 'GPP:emps' %}" style="color:white;" class="nav-link text-white">Emplois</a></h3>
+         <p class="tutor">{{emps.count}}</p>
+      </div>
+
+      
+      {% else %}
+      <div class="box" style="background-color: rgba(5, 91, 31, 0.916);opacity:.5">
+         <h3 class="title"><a href="{% url 'GPP:prof_cours' %}" style="color:white;" class="nav-link text-white">Cours</a></h3>
+         <p class="tutor">{{cours.count}}</p>
+      </div>
+
+      <div class="box" style="background-color: rgba(215, 35, 155, 0.916);">
+         <h3 class="title"><a href="{% url 'GPP:paie_list' %}" style="color:white;" class="nav-link text-white">Paiements</a></h3>
+         <p class="tutor">{{paies.count}}</p>
+      </div>
+      {% endif %}
+
+      
+    </div>
+    {% if request.user.is_staff %}
+
+    <div class="chart-container">
+      <canvas id="myChart"></canvas>
+      <canvas id="myChart1"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="myChart2"></canvas>
+    </div>
+    {% else %}
+    <div class="chart-container">
+       <canvas id="myChart"></canvas>
+      <canvas id="myChart1"></canvas>
+    </div>
+{% endif %}
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+      const ctxCours = document.getElementById('myChart').getContext('2d');
+      new Chart(ctxCours,  {
+        type: 'doughnut',
+        data: {
+          labels: ['Signés', 'Non Signés'],
+          datasets: [{
+            label: 'Cours',
+
+            data: [{{ cours_signees.count }}, {{ cours_non_signees.count }}],
+
+            backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+            borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      const ctxPaie = document.getElementById('myChart1').getContext('2d');
+      new Chart(ctxPaie,  {
+        type: 'doughnut',
+        data: {
+          labels: ['En attente', 'Accepté','Refusé'],
+          datasets: [{
+            label: 'Paiements',
+
+            data: [{{ paie_en_cours.count }}, {{ paie_conf.count }}, {{ paie_ref.count }}],
+
+            backgroundColor: ['rgba(54, 162, 235, 0.2)','rgba(13, 229, 82, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+            borderColor: ['rgba(54, 162, 235, 1)','rgba(13, 229, 82, 0.2)', 'rgba(255, 99, 132, 1)'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      
+      {% if request.user.is_staff %}
+    
+      const ctxEmplois = document.getElementById('myChart2').getContext('2d');
+      new Chart(ctxEmplois, {
+        type: 'bar',
+        data: {
+          labels: [{% for label in labels_emplois %}'{{ label }}',{% endfor %}],
+          datasets: [{
+            label: 'Nombre d\'emplois',
+            data: [{% for data in data_emplois %}{{ data }},{% endfor %}],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      {% endif %}
+
+      
+    </script>
+  
+</section>
+
+
+{% endblock body %}
+{% block javascript %}
+
+{% endblock %}

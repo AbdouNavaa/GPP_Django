@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block body %}
+<section class="home-grid">
+    <h1 class="heading">Cours Signés</h1>
+    <div style="width:100%;" class="Clend">
+        <!-- Formulaire de filtrage (GET) -->
+        <form method="GET" action="{% url 'GPP:paies' %}" id="filter-form" style="display:inline-flex;justify-content: center; 
+        font-size: large; width: 100%;height: 4rem; ">
+            <label for="date_deb" style="width: 10%; text-align: center;">Date Début:</label>
+            <input type="date" name="date_deb" id="date_deb" value="{{ date_deb|date:'Y-m-d' }}" required style="width:19%; border-radius: .5rem;text-align: center; ">
+
+            <label for="date_fin" style="width: 10%; text-align: center;">Date Fin:</label>
+            <input type="date" name="date_fin" id="date_fin" value="{{ date_fin|date:'Y-m-d' }}" required style="width:19%; border-radius: .5rem;text-align: center; ">
+            <button type="submit" class="btn btn-primary" style="width:19%; margin: 0%  0%  0%  2%;">Filtrer</button>
+        </form>
+
+        <!-- Formulaire de création de paiements (POST) -->
+        <form method="POST" action="{% url 'GPP:create_paiements' %}">
+            {% csrf_token %}
+            <input type="hidden" name="date_deb" value="{{ date_deb|date:'Y-m-d' }}">
+            <input type="hidden" name="date_fin" value="{{ date_fin|date:'Y-m-d' }}">
+        <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="select_all" onclick="toggleSelection()">
+                        </th>
+                        <th scope="col">Professeur</th>
+                        <th scope="col">Banque</th>
+                        <th scope="col">Compte</th>
+                        <th scope="col">Nombre d'heures</th>
+                        <th scope="col">Montant Total</th>
+                        <th scope="col">Nombre de Cours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cours in page_obj %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="prof_ids" value="{{ cours.prof_id }}" class="prof-checkbox">
+                        </td>
+                        <td>{{ cours.prof__user__username }}</td>
+                        <td>{{ cours.prof__banc }}</td>
+                        <td>{{ cours.prof__compte }}</td>
+                        <td>{{ cours.total_nbh }}</td>
+                        <td>{{ cours.total }}</td>
+                        <td>{{ cours.nbc }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" class="inline-btn">Créer Paiements</button>
+        </div>
+    </form>
+</section>
+
+<script>
+    // Function to toggle selection of all checkboxes
+    function toggleSelection() {
+        var checkboxes = document.getElementsByClassName('prof-checkbox');
+        var selectAll = document.getElementById('select_all').checked;
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = selectAll;
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,126 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}        
+<section class="home-grid">
+
+ <div class="heading" >
+  <h1 >Liste d'Emplois</h1>
+ 
+     <a href="{% url "GPP:add_emp"   %}" class="inline-btn nav-link" 
+           style="margin-left: 73%; color: white;"><i class="fas fa-add"></i><span>Ajouter</span></a>
+   </div>
+
+   <form method="GET" action="{% url 'GPP:days_emp' %}" class="EmpForm" style="display:inline-flex;
+   justify-content: space-between; 
+   font-size: large; width: 100%;height: 4rem; ">
+       <button name="jour" id="jour" value="Lundi"   type="submit" class="btn btn-primary" style="width:13%;font-size: large;">Lundi</button>
+       <button name="jour" id="jour" value="Mardi"  type="submit" class="btn btn-primary"  style="width:13%;font-size: large;">Mardi</button>
+       <button name="jour" id="jour" value="Mercredi" required type="submit" class="btn btn-primary"  style="width:13%;font-size: large;">Mercredi</button>
+       <button name="jour" id="jour" value="Jeudi" required type="submit" class="btn btn-primary"  style="width:13%;font-size: large;">Jeudi</button>
+       <button name="jour" id="jour" value="Vendredi" required type="submit" class="btn btn-primary"  style="width:13%;font-size: large;">Vendredi</button>
+       <button name="jour" id="jour" value="Samedi" required type="submit" class="btn btn-primary"  style="width:13%;font-size: large;">Samedi</button>
+       <button name="jour" id="jour" value="Dimanche" required type="submit" class="btn btn-primary"  style="width:13%;font-size: large;">Dimanche</button>
+   </form>
+    <table class="table "  >
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Deb</th>
+            <th scope="col">Prof</th>
+            <th scope="col">Matiere</th>
+            <th scope="col">Filiere</th>
+            <th scope="col">Type</th>
+            <th scope="col">Groupe</th>
+            <th scope="col">Nbh</th>
+            <th scope="col">Jour</th>
+            <th scope="col">action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for emploi in page_obj %}
+          <tr>
+          <td>{{forloop.counter}}</td>
+          <td> {{emploi.deb }}</td>
+          <td>{{emploi.prof}}</td>
+         <td>{{emploi.matiere}}</td>
+         <td>{{emploi.filiere}}{{emploi.matiere.semestre}}</td>
+         <td>{{emploi.type}}</td>
+         <td>{{emploi.groupe}}</td>
+         <td>{{emploi.nbh}}</td>
+         <td>{{emploi.jour}}</td>
+         <td>
+         
+          {% comment %} <a href="{% url 'GPP:update_filiere' cour.id %} "><i class="fa fa-edit" aria-hidden="true" style="color:green;"></i></a> {% endcomment %}
+          <a href="#" onclick="confirmDelete({{ emploi.id }}); return false;">
+            <i class="fa fa-trash" aria-hidden="true" style="color:red;"></i>
+        </a>
+        
+       </a>
+      
+         </td>
+         
+             {% comment %} <td>{% if isSigned == true %}<i class="fa fa-check-circle" aria-hidden="true"></i> {% endcomment %}
+               {% comment %} {% else %}<i class="far fa-check-square    "></i>{% endif %}</td> {% endcomment %}
+          {% comment %} </td> {% endcomment %}
+        </tr>
+          {% endfor %}
+      
+           </tbody>
+          </table>
+         
+          <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="nav-link" href="?page=1">&laquo; Premiere</a>
+                <a class="nav-link" href="?page={{ page_obj.previous_page_number }}">Avant</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a class="nav-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+                <a class="nav-link" href="?page={{ page_obj.paginator.num_pages }}">Derniere &raquo;</a>
+            {% endif %}
+        </div>
+    </section>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.js"></script>
+    <script>
+      function confirmDelete(empId) {
+          Swal.fire({
+              title: 'Êtes-vous sûr?',
+              text: "Vous ne pourrez pas revenir en arrière!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Oui, supprimer!',
+              cancelButtonText: 'Annuler'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.href = "Ed" + empId;
+              }
+          })
+      }
+
+      const buttons = document.querySelectorAll('.EmpForm button');
+
+buttons.forEach(button => {
+  button.addEventListener('dblclick', (event) => {
+    event.preventDefault(); // Prevent default form submission
+    button.value = ''; // Clear the button's value
+    // You might want to add visual feedback here, like changing button style
+  });
+});
+
+      </script>
+      
+
+
+
+
+ {% endblock body %}

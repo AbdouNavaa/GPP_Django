@@ -1,0 +1,43 @@
+
+{% extends 'base.html' %}
+{% comment %} {% load bootstrap4 %} {% endcomment %}
+{% block content %}   
+{% endblock content %}
+
+{% block body %}        
+ 
+<section class="user-profile">
+
+    <h1 class="heading">your profile</h1>
+ 
+    <div class="info">
+ 
+       <div class="user">
+         <img src="{{ prof.image.url }}" class="image" alt="{{ prof.user }}">
+          <h3>{{prof}}</h3>
+          <p>{{prof.role}}</p>
+          <a href="#" class="inline-btn">update profile</a>
+       </div>
+    
+       <div class="box-container">
+    
+          {% for mat in matieres %}
+          <div class="box">
+             <div class="flex">
+                <i class="fa fa-bookmark"></i>
+                <div>
+                   <span>{{mat.code}}</span>
+                   <p>{{mat.name}}</p>
+                   <p>{{mat.filiere}}{{mat.semestre}}</p>
+                </div>
+             </div>
+             <a href="{% url "GPP:matiere" mat.id %}" class="inline-btn">Details</a>
+          </div>
+          {% endfor %}
+        
+    
+       </div>
+    </div>
+ 
+ </section>
+{% endblock body %}

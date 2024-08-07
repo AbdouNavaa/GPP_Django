@@ -1,0 +1,102 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}        
+<section class="home-grid">
+  <h1 class="heading">Liste de Porfesseurs</h1>
+
+  <form method="post" action="{% url 'account:upload_professeurs' %}" enctype="multipart/form-data" 
+  style="display: flex;justify-content: space-between;">
+    {% csrf_token %}
+    <input type="file" name="file" accept=".xlsx" class="btn btn-secondary"style="width: 60%;">
+    <input type="submit" value="Importer les professeurs"  class="option-btn" style="width: 30%;">
+</form>
+
+ <!-- <h1 class="heading">quick options</h1> -->
+    <table class="table "  >
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Image</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Email</th>
+            <th scope="col">Banque</th>
+            <th scope="col">Compte</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+         {% for prof in page_obj %}
+         <td>{{forloop.counter}}</td>
+         <th scope="row">                
+            <img src="{{prof.image.url}}" alt="hello" style="width: 5rem; height: 5rem;border-radius: 50%; object-fit: unset;">
+         </th>
+            <td>{{prof.user.first_name}} {{prof.user.last_name}}</td>
+            <td>{{prof.user.email}}</td>
+            <td>{{prof.banc}}</td>
+            <td>{{prof.compte}}</td>
+            <td>
+              <a href="{% url 'account:update_prof' prof.id %} "><i class="fa fa-edit" aria-hidden="true" style="color:green;"></i></a>
+              <a href="#" onclick="confirmDelete({{ prof.id }}); return false;">
+                <i class="fa fa-trash" aria-hidden="true" style="color:red;"></i>
+            </a>
+            
+           </a>
+          
+             </td>
+             
+                 {% comment %} <td>{% if isSigned == true %}<i class="fa fa-check-circle" aria-hidden="true"></i> {% endcomment %}
+                   {% comment %} {% else %}<i class="far fa-check-square    "></i>{% endif %}</td> {% endcomment %}
+              {% comment %} </td> {% endcomment %}
+            </tr>
+              {% endfor %}
+          
+               </tbody>
+              </table>
+             
+              <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a class="nav-link" href="?page=1">&laquo; Premiere</a>
+                    <a class="nav-link" href="?page={{ page_obj.previous_page_number }}">Avant</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                </span>
+        
+                {% if page_obj.has_next %}
+                    <a class="nav-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+                    <a class="nav-link" href="?page={{ page_obj.paginator.num_pages }}">Derniere &raquo;</a>
+                {% endif %}
+            </div>
+        </section>
+        
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.js"></script>
+        <script>
+          function confirmDelete(profId) {
+              Swal.fire({
+                  title: 'Êtes-vous sûr?',
+                  text: "Vous ne pourrez pas revenir en arrière!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Oui, supprimer!',
+                  cancelButtonText: 'Annuler'
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      window.location.href = "Pd" + profId;
+                  }
+              })
+          }
+          </script>
+          
+    
+   
+
+
+
+ {% endblock body %}

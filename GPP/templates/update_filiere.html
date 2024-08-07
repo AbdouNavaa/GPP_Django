@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<section class="form-container">
+    <form action="{% url 'GPP:update_filiere' filiere.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>Modifier {{ filiere.name }}</h3>
+        {{ form.as_p }}
+        <input type="submit" value="Mettre à jour" name="submit" class="btn">
+    </form>
+</section>
+
+
+
+{% endblock %}

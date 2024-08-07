@@ -1,0 +1,86 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}        
+<section class="home-grid">
+
+    <form method="post" action="{% url 'GPP:upload_matieres' %}" enctype="multipart/form-data" 
+    style="display: flex;justify-content: space-between;">
+      {% csrf_token %}
+      <input type="file" name="file" accept=".xlsx" class="inline-btn"style="width: 50%;">
+      <input type="submit" value="Importer les matieres"  class="inline-btn" style="width: 28%;">
+      <a href="#" class="inline-btn nav-link" style="width: 18%; color: white;"><i class="fas fa-add"></i><span>Ajouter</span></a>
+
+  </form>
+  <!-- <h1 class="heading">quick options</h1> -->
+    <table class="table "  >
+        <thead>
+          <tr>
+            <th scope="row">#</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Code</th>
+            <th scope="col">ProfCM</th>
+            <th scope="col">ProfTP</th>
+            <th scope="col">ProfTD</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr>
+         {% for mat in page_obj %}
+         <td>{{forloop.counter}}</td>
+         <td>{{mat.name}}</td>
+            <td>{{mat.code}}</td>
+            <td>
+                {% for prof in mat.prof_cm.all %}
+                    {{ prof.user }} {% if not forloop.last %}| {% endif %}
+                {% endfor %}
+            </td>
+
+            <td>
+                {% for prof in mat.prof_tp.all %}
+                    {{ prof.user }} {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+
+            <td>
+                {% for prof in mat.prof_td.all %}
+                    {{ prof.user }} {% if not forloop.last %}| {% endif %}
+                {% endfor %}
+            </td>
+
+            <td>
+                <a href="{% url 'GPP:update_mat' mat.id %} "><i class="fa fa-edit" aria-hidden="true" style="color:green;"></i></a>
+                <a href="#"><i class="fa fa-trash" aria-hidden="true" style="color:red;"></i></a>
+              </td>
+    </tr>
+      {% endfor %}
+  
+       </tbody>
+      </table>
+
+    
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="nav-link" href="?page=1">&laquo; Premiere</a>
+            <a class="nav-link" href="?page={{ page_obj.previous_page_number }}">Avant</a>
+        {% endif %}
+  
+        <span class="current">
+            Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+        </span>
+  
+        {% if page_obj.has_next %}
+            <a class="nav-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+            <a class="nav-link" href="?page={{ page_obj.paginator.num_pages }}">Derniere &raquo;</a>
+        {% endif %}
+    </div> 
+        
+     
+</section>
+
+
+
+
+
+ {% endblock body %}

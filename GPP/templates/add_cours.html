@@ -1,0 +1,75 @@
+        {% extends 'base.html' %}
+        {% block body %}
+        
+        <section class="form-container">
+           <form action="{% url 'GPP:create_cours' %}" method="post" id="cours-form">
+            {% csrf_token %}
+            <h3>Créer un Cours</h3>
+            {{ form.as_p }}
+            <input type="submit" value="Créer" class="btn">
+           </form>
+        </section>
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // When the professor field changes
+                $('#id_prof').change(function() {
+                    var profId = $(this).val();
+                    if (profId) {
+                        $.ajax({
+                            url: "{% url 'GPP:load_matieres' %}",
+                            data: {
+                                'prof_id': profId
+                            },
+                            success: function(data) {
+                                $("#id_matiere").html('<option value="">Sélectionnez une matière</option>');
+                                $.each(data, function(key, value) {
+                                    $("#id_matiere").append('<option value="' + value.id + '">' +value.filiere__name+'-'+ value.name + '</option>');
+                                });
+                            }
+                        });
+                    } else {
+                        $("#id_matiere").html('<option value="">Sélectionnez une matière</option>');
+                    }
+                });
+        
+                // When the matiere field changes
+                $('#id_matiere').change(function() {
+                    // Logic to load and update the group field based on the selected matiere and professor
+                    // You can add another Ajax call here if necessary
+                });
+            });
+        
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                function loadGroups() {
+                    var profId = $('#id_prof').val();
+                    var matiereId = $('#id_matiere').val();
+                    var typeCours = $('#id_type').val();
+                    if (profId && matiereId && typeCours) {
+                        $.ajax({
+                            url: "{% url 'GPP:load_groupes' %}",
+                            data: {
+                                'prof_id': profId,
+                                'matiere_id': matiereId,
+                                'type_cours': typeCours
+                            },
+                            success: function(data) {
+                                $("#id_groupe").html('<option value="">Sélectionnez un groupe</option>');
+                                $.each(data, function(key, value) {
+                                    $("#id_groupe").append('<option value="' + value + '">' + value + '</option>');
+                                });
+                            }
+                        });
+                    }
+                }
+            
+                $('#id_prof, #id_matiere, #id_type').change(loadGroups);
+            });
+            
+        </script>
+       {% endblock %}
+        

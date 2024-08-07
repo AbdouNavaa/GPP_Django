@@ -1,0 +1,111 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}        
+<section class="home-grid">
+
+  <div class="heading" >
+ <h1 >Liste de Paiements</h1>
+
+
+  </div>
+          
+    <table class="table "  >
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Du</th>
+            <th scope="col">Au</th>
+            <th scope="col">Prof</th>
+            <th scope="col">Nbh</th>
+            <th scope="col">MT</th>
+            <th scope="col">Confirmer?</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for paie in page_obj %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+         <td>{{paie.fromDate| date:'d-m'}} </td>
+         <td>{{paie.toDate| date:'d-m'}} </td>
+         <td>{{paie.prof}}</td>
+         <td>{{paie.nbh}}</td>
+         <td>{{paie.taux}}</td>
+         {% if paie.confirmation == 'accepté' %}
+         <td style="background-color: green; color: aliceblue;">
+        {{paie.confirmation}}   
+        </td>
+        {% elif paie.confirmation == 'en attente' %}
+        <td style="color: aliceblue;background-color: rgb(135, 188, 238);">
+            {{paie.confirmation}}
+            </td>
+        {% else %}
+        <td style="color: aliceblue;background-color: rgb(189, 41, 11);">
+            {{paie.confirmation}}
+            </td>
+        {% endif %}
+
+    <td colspan="2">
+      <a href="{% url 'GPP:confirmer' paie.id %} "><i class="fa fa-thumbs-up" aria-hidden="true" style="color:green;"></i></a>
+      <a href="{% url 'GPP:refus' paie.id %} "><i class="fa fa-thumbs-down" aria-hidden="true" style="color:rgb(244, 151, 13);"></i></a>
+      <a href="#" onclick="confirmDelete({{ paie.id }}); return false;">
+        <i class="fa fa-trash" aria-hidden="true" style="color:red;"></i>
+    </a>
+    
+   </a>
+  
+     </td>
+     
+         {% comment %} <td>{% if isSigned == true %}<i class="fa fa-check-circle" aria-hidden="true"></i> {% endcomment %}
+           {% comment %} {% else %}<i class="far fa-check-square    "></i>{% endif %}</td> {% endcomment %}
+      {% comment %} </td> {% endcomment %}
+    </tr>
+      {% endfor %}
+  
+       </tbody>
+      </table>
+     
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="nav-link" href="?page=1">&laquo; Premiere</a>
+            <a class="nav-link" href="?page={{ page_obj.previous_page_number }}">Avant</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="nav-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+            <a class="nav-link" href="?page={{ page_obj.paginator.num_pages }}">Derniere &raquo;</a>
+        {% endif %}
+    </div>
+</section>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.js"></script>
+<script>
+  function confirmDelete(paieId) {
+      Swal.fire({
+          title: 'Êtes-vous sûr?',
+          text: "Vous ne pourrez pas revenir en arrière!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Oui, supprimer!',
+          cancelButtonText: 'Annuler'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = "dP" + paieId;
+          }
+      })
+  }
+  </script>
+  
+
+
+
+ {% endblock body %}
